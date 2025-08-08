@@ -1,20 +1,20 @@
 import StylePost from './Post.module.css';
+import { Comment } from './Comment.jsx';
+import { Avatar } from './Avatar.jsx';
 
 export function Post(props) {
     return (
             <article className={StylePost.post}>
                 <header>
                     <div className={StylePost.author}>
-                        <img className={StylePost.avatar} src="https://github.com/patricklohn.png"/>
+                        <Avatar avatarUrl="https://github.com/patricklohn.png"/>
                         <div className={StylePost.authorInfo}>
                             <strong>Patrick Lohn</strong>
                             <span>Web Developer</span>
                         </div>
                     </div>
-
                     <time title='08 de Agosto às 21:58' dateTime='2025-08-07'>Publicado há 1h</time>
                 </header>
-
                 <div className={StylePost.content}>
                     <p>History Hello World 📖</p>
                     <p>Hello World é uma tradição para novas linguagens</p>
@@ -24,6 +24,18 @@ export function Post(props) {
                         <a href="https://github.com/patricklohn/feed-dev">#patrickloh#feed-dev{" "}</a>
                         <a href="https://github.com/patricklohn/feed-dev">#patrickloh#feed-dev</a>
                     </p>
+                </div>
+                <form className={StylePost.commentForm}>
+                    <strong>Deixe seu feedBack</strong>
+                    <textarea placeholder='Deixe um comentário'></textarea>
+                    <footer>
+                        <button type='submit'>Publicar</button>
+                    </footer>
+                </form>
+                <div className={StylePost.comentList}>
+                    <Comment />
+                    <Comment />
+                    <Comment />
                 </div>
             </article>
     )
