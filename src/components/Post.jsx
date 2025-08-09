@@ -1,41 +1,69 @@
 import StylePost from './Post.module.css';
+// controle de datas
+import { format, formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+
 import { Comment } from './Comment.jsx';
 import { Avatar } from './Avatar.jsx';
+import { useState } from 'react';
 
-export function Post(props) {
+export function Post({author, content, publshedAt}) {
+    // const publishedDateFormatted = new Intl.DateTimeFormat('pt-BR',{
+    //     day: '2-digit',
+    //     month: 'long',
+    //     hour: '2-digit',
+    //     minute: '2-digit',
+    // }).format(publshedAt);
+
+    const publishedDateFormatted = format(publshedAt, "dd 'de' LLLL 'às' HH:mm'h'", {locale: ptBR})
+    const publishedDateRelativeToNow = formatDistanceToNow(publshedAt, {locale: ptBR, addSuffix: true})
+    const [comments, setComments] = useState(['Post muito bacana'])
+    const [newCommentText, setNewCommentText] = useState('')
+
+    function handleCreateNewComment(){
+        event.preventDefault();   
+        setComments([...comments, newCommentText])
+        setNewCommentText('')
+    }
+
+    function handleCreateNewCommentChange(){
+        event.preventDefault();
+        setNewCommentText(event.target.value)
+    }
+
     return (
             <article className={StylePost.post}>
                 <header>
                     <div className={StylePost.author}>
-                        <Avatar avatarUrl="https://github.com/patricklohn.png"/>
+                        <Avatar avatarUrl={author.avatarUrl}/>
                         <div className={StylePost.authorInfo}>
-                            <strong>Patrick Lohn</strong>
-                            <span>Web Developer</span>
+                            <strong>{author.name}</strong>
+                            <span>{author.role}</span>
                         </div>
                     </div>
-                    <time title='08 de Agosto às 21:58' dateTime='2025-08-07'>Publicado há 1h</time>
+                    <time title={publishedDateFormatted} dateTime={publshedAt.toISOString()}>{publishedDateRelativeToNow}</time>
                 </header>
                 <div className={StylePost.content}>
-                    <p>History Hello World 📖</p>
-                    <p>Hello World é uma tradição para novas linguagens</p>
-                    <p>Sempre que voce iniciar uma nova linguagem o primeiro passo sempre sera efetuar o print no console com a mensagem "Hello World"</p>
-                    <p><a href="https://github.com/patricklohn/feed-dev">#patricklohn/feed-dev</a></p>
-                    <p>
-                        <a href="https://github.com/patricklohn/feed-dev">#patrickloh#feed-dev{" "}</a>
-                        <a href="https://github.com/patricklohn/feed-dev">#patrickloh#feed-dev</a>
-                    </p>
+                    {content.map(line => {
+                        if(line.type === 'paragraph'){
+                            return <p key={line.content}>{line.content}</p>;
+                        }
+                        if(line.type === 'link'){
+                            return <p key={line.content}><a href={line.a}>{line.content}</a></p>;
+                        }
+                    })}
                 </div>
-                <form className={StylePost.commentForm}>
+                <form onSubmit={handleCreateNewComment} value={newCommentText} className={StylePost.commentForm}>
                     <strong>Deixe seu feedBack</strong>
-                    <textarea placeholder='Deixe um comentário'></textarea>
+                    <textarea onChange={handleCreateNewCommentChange} placeholder='Deixe um comentário'></textarea>
                     <footer>
                         <button type='submit'>Publicar</button>
                     </footer>
                 </form>
                 <div className={StylePost.comentList}>
-                    <Comment />
-                    <Comment />
-                    <Comment />
+                    {comments.map(coment => {
+                        return <Comment key={coment} coment={coment}/>
+                    })}
                 </div>
             </article>
     )
