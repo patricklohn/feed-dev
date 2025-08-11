@@ -1,6 +1,6 @@
-import { Header } from './components/Header.jsx'
-import { Post } from './components/Post.jsx'
-import { Sidebar } from './components/Sidebar.jsx'
+import { Header } from './components/Header'
+import { Post } from './components/Post'
+import { Sidebar } from './components/Sidebar'
 import AppStyle from './App.module.css'
 
 const posts = [

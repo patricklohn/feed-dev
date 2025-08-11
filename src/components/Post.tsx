@@ -1,13 +1,31 @@
 import StylePost from './Post.module.css';
 // controle de datas
 import { format, formatDistanceToNow } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
+import { ptBR } from 'date-fns/locale/pt-BR';
 
-import { Comment } from './Comment.jsx';
-import { Avatar } from './Avatar.jsx';
-import { useState } from 'react';
+import { Comment } from './Comment';
+import { Avatar } from './Avatar';
+import { useState, type ChangeEvent, type FormEvent, type InvalidEvent } from 'react';
 
-export function Post({author, content, publshedAt}) {
+interface Author {
+    name: string;
+    role: string;
+    avatarUrl: string;
+}
+
+interface Content {
+    type: string,
+    a?: string,
+    content: string,
+}
+
+interface PostProps{
+    author: Author;
+    publshedAt: Date;
+    content: Content[]
+}
+
+export function Post({author, content, publshedAt}: PostProps) {
     // const publishedDateFormatted = new Intl.DateTimeFormat('pt-BR',{
     //     day: '2-digit',
     //     month: 'long',
@@ -21,27 +39,27 @@ export function Post({author, content, publshedAt}) {
     const [newCommentText, setNewCommentText] = useState('')
     const isNewCommentEmpty = newCommentText.length === 0;
 
-    function handleCreateNewComment(){
+    function handleCreateNewComment(event:FormEvent){
         event.preventDefault();   
         setComments([...comments, newCommentText])
         setNewCommentText("")
     }
 
-    function handleCreateNewCommentChange(){
+    function handleCreateNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>){
         event.preventDefault();
         event.target.setCustomValidity("");
         setNewCommentText(event.target.value)
     }
 
-    function deleteComment(commentToDelete){
+    function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>){
+        event.target.setCustomValidity("Esse campo é obrigatório!");
+    }
+
+     function deleteComment(commentToDelete: string){
         const comentsWithoutDeletOne = comments.filter(comment => {
             return comment !== commentToDelete;
         })
         setComments(comentsWithoutDeletOne)
-    }
-
-    function handleNewCommentInvalid(){
-        event.target.setCustomValidity("Esse campo é obrigatório!");
     }
 
     return (
@@ -66,7 +84,7 @@ export function Post({author, content, publshedAt}) {
                         }
                     })}
                 </div>
-                <form onSubmit={handleCreateNewComment} value={newCommentText} className={StylePost.commentForm}>
+                <form onSubmit={handleCreateNewComment} className={StylePost.commentForm}>
                     <strong>Deixe seu feedBack</strong>
                     <textarea  value={newCommentText} onChange={handleCreateNewCommentChange} placeholder='Deixe um comentário' required onInvalid={handleNewCommentInvalid}></textarea>
                     <footer>

@@ -1,9 +1,14 @@
 import StyleComment from './Comment.module.css';
 import { useState } from 'react';
 import { Trash, ThumbsUp } from 'phosphor-react';
-import { Avatar } from './Avatar.jsx';
+import { Avatar } from './Avatar';
 
-export function Comment({coment, onDeleteComment}){
+interface CommentProps {
+    coment: string;
+    onDeleteComment: (coment: string) => void; 
+}
+
+export function Comment({coment, onDeleteComment}: CommentProps){
 
     const [likeCount, setLikeCount] = useState(0);
     
